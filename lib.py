@@ -37,18 +37,24 @@ else:
 
 # User input for filtering
 author_filter = st.text_input("🔎 Entra un nom d'autor:", "")
+# url_filter = st.text_input("🔎 Entra un nom d'url:", "")
 if st.button("Buscar"):
 
     # Fetch data with correct pagination in SQLiteCloud
     query = f'SELECT "Id", ISBN, ImageUrl, ItemUrl, Title, Author, Bookshelf FROM llibres WHERE Author COLLATE NOCASE LIKE "%{author_filter}%"'
+    # query2 = f'SELECT "Id", ISBN, ImageUrl, ItemUrl, Title, Author, Bookshelf FROM llibres WHERE ItemUrl COLLATE NOCASE LIKE "%{url_filter}%"'
     select_df = pd.read_sql(query, conn)
+    # select_df2 = pd.read_sql(query2, conn)
     num_registres = len(select_df)
+    # num_registres2 = len(select_df2)
     st.write(f"Tenim **{num_registres}** registres")
+    # st.write(f"Tenim **{num_registres2}** registres")
 
     select_df['ISBN'] = select_df['ISBN'].fillna(0).astype('Int64')  # Allows nullable integers
     select_df['OpenLib'] = select_df['ISBN'].apply(lambda isbn: f"https://openlibrary.org/isbn/{isbn}" if pd.notna(isbn) else "")
-
-    column_order = ["ImageUrl", "ISBN", "Id", "Title", "Author", "BookShelf", "OpenLib"]
+    select_df['OpenLib2'] = select_df['ISBN'].apply(
+        lambda isbn: f"https://www.librarything.com/isbn/{isbn}" if pd.notna(isbn) else "")
+    column_order = ["ImageUrl", "ISBN", "Id", "Title", "Author", "BookShelf", "OpenLib", "OpenLib2"]
     select_df = select_df[column_order]
 
 
@@ -75,6 +81,9 @@ if st.button("Buscar"):
             ),
             "OpenLib": st.column_config.LinkColumn(
                 label="Link", display_text="Open Link"
+            ),
+            "OpenLib2": st.column_config.LinkColumn(
+                label="Link2", display_text="LibThing"
             ),
         },
         hide_index=True, use_container_width=False, row_height=100)
