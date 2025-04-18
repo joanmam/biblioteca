@@ -1,0 +1,1 @@
+cami_db = 'sqlitecloud://cmax3edchk.g4.sqlite.cloud:8860/Mamen_Receptes.db?apikey=JXBlj5mEggPk91icX1r2Y3RLvh4LeMpjWGisY7kX7bE'
